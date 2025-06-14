@@ -1,0 +1,71 @@
+import { before_test, after_test } from "./before-after";
+import request from "supertest";
+import 'dotenv/config';
+
+const url = `http://${process.env.EXPRESS_HOST}:${process.env.EXPRESS_PORT}`;
+
+describe("Developer Test", () => {
+
+    beforeAll(async () => { await before_test(); });
+    afterAll(async () => { await after_test(); });
+
+    it("POST /developer/register - return 400 - password not match", async () => {
+        const response = await request(url)
+            .post('/developer/register')
+            .send({
+                name: 'user',
+                email: 'user@developer.com',
+                password: 'wrong_password',
+                confirm_password: 'user@developer.com'
+            });
+
+        expect(response.status).toBe(400);
+        expect(response.body.data[0].message).toBe("Passwords do not match");
+    })
+
+    it("POST /developer/register - return 201 - register success", async () => {
+        const response = await request(url)
+            .post('/developer/register')
+            .send({
+                name: 'user',
+                email: 'user@developer.com',
+                password: 'user@developer.com',
+                confirm_password: 'user@developer.com'
+            });
+
+        expect(response.status).toBe(201);
+        expect(response.body.message).toBe("Register Successfully");
+        expect(response.body.data.id).toBeDefined();
+        expect(response.body.data.name).toBe("user");
+        expect(response.body.data.email).toBe("user@developer.com");
+        expect(response.body.data.hash_password).toBeDefined();
+    })
+
+    it("POST /developer/register - return 409 - email already exists", async () => {
+        const response = await request(url)
+            .post('/developer/register')
+            .send({
+                name: 'user',
+                email: 'user@developer.com',
+                password: 'user@developer.com',
+                confirm_password: 'user@developer.com'
+            });
+
+        expect(response.status).toBe(409);
+        expect(response.body.message).toBe("Email already exists");
+    })
+
+    it("POST /developer/login - return 200 - login success", async () => {
+        const response = await request(url)
+            .post('/developer/login')
+            .send({
+                email: 'user@developer.com',
+                password: 'user@developer.com'
+            });
+
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe("Login Successfully");
+        expect(response.body.data).toBeDefined();
+    })
+
+})
