@@ -14,6 +14,7 @@ api.get('/', WellcomeController.index);
 // developer routes
 api.post('/developer/register', DeveloperController.register);
 api.post('/developer/login', DeveloperController.login);
+api.post('/developer/applications', DeveloperController.create_application);
 
 // export
 export default api;

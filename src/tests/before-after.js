@@ -1,10 +1,12 @@
 import db from "../application/database.js";
 
 const before_test = async () => {
+    await db.application.deleteMany();
     await db.developer.deleteMany();
 };
 
 const after_test = async () => {
+    await db.application.deleteMany();
     await db.developer.deleteMany();
     await db.$disconnect();
 };

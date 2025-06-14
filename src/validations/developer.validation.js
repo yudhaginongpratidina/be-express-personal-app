@@ -33,4 +33,12 @@ export default class DeveloperValidation {
             .min(8, { message: "Password must be at least 8 characters long" })
             .max(50, { message: "Password must be at most 50 characters long" }),
     });
+
+    static CREATE_APPLICATION = z.object({
+        name: z
+            .string()
+            .min(1, { message: "Application must be at least 1 characters long" })
+            .min(3, { message: "Name must be at least 3 characters long" })
+            .max(250, { message: "Name must be at most 250 characters long" }),
+    });
 }

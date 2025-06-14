@@ -27,13 +27,13 @@ model Developer {
 }
 
 model Application {
-    id            String    @id @default(uuid())
+    id            String   @id @default(uuid())
     developer_id  String
-    application   String    @unique
-    client_id     String    @unique
-    client_secret String    @unique
-    created_at    DateTime  @default(now())
-    updated_at    DateTime  @default(now())
+    name          String   @unique
+    client_id     String   @unique
+    client_secret String   @unique
+    created_at    DateTime @default(now())
+    updated_at    DateTime @default(now())
 
-    developer     Developer @relation("DeveloperApplications", fields: [developer_id], references: [id])
+    developer Developer @relation("DeveloperApplications", fields: [developer_id], references: [id])
 }

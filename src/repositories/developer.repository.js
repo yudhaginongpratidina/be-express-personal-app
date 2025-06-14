@@ -33,4 +33,30 @@ export default class DeveloperRepository {
         });
     }
 
+    static async find_application_exists(developer_id, name) {
+        return await db.application.findFirst({
+            where: {
+                developer_id: developer_id,
+                name: name
+            }
+        });
+    }
+
+    static async create_application(developer_id, name, client_id, client_secret) {
+        return await db.application.create({
+            data: {
+                developer_id: developer_id,
+                name: name,
+                client_id: client_id,
+                client_secret: client_secret
+            }, select: {
+                id: true,
+                name: true,
+                client_id: true,
+                client_secret: true,
+                created_at: true
+            }
+        });
+    }
+
 }

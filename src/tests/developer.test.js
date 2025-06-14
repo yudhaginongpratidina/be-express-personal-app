@@ -9,6 +9,8 @@ describe("Developer Test", () => {
     beforeAll(async () => { await before_test(); });
     afterAll(async () => { await after_test(); });
 
+    let token;
+
     it("POST /developer/register - return 400 - password not match", async () => {
         const response = await request(url)
             .post('/developer/register')
@@ -66,6 +68,36 @@ describe("Developer Test", () => {
         expect(response.status).toBe(200);
         expect(response.body.message).toBe("Login Successfully");
         expect(response.body.data).toBeDefined();
+
+        token = response.body.data;
     })
 
+    it("POST /developer/login - return 201 - create application (client_id, client_secret)", async () => {
+        const response = await request(url)
+            .post('/developer/applications')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                name: 'app test'
+            });
+
+        expect(response.status).toBe(201);
+        expect(response.body.message).toBe("Create Application Successfully");
+        expect(response.body.data.id).toBeDefined();
+        expect(response.body.data.name).toBe("app test");
+        expect(response.body.data.client_id).toBeDefined();
+        expect(response.body.data.client_secret).toBeDefined();
+    })
+
+    it("POST /developer/login - return 409 - create application (client_id, client_secret)", async () => {
+        const response = await request(url)
+            .post('/developer/applications')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                name: 'app test'
+            });
+
+        expect(response.status).toBe(409);
+        expect(response.body.message).toBe("Application already exists");
+    })
+    
 })

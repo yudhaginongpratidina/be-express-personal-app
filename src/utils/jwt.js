@@ -14,3 +14,8 @@ export const generateToken = async (id, name, email) => {
 
     return { access_token, refresh_token };
 };
+
+export const decodeToken = async (token) => {
+    const secret = process.env.JWT_ACCESS_TOKEN_SECRET;
+    return jwt.verify(token, secret);
+};
