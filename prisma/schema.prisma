@@ -14,7 +14,7 @@ enum ACCOUNT_STATUS {
     deleted
 }
 
-model developer {
+model Developer {
     id            String         @id @default(uuid())
     name          String
     email         String         @unique
@@ -22,4 +22,18 @@ model developer {
     status        ACCOUNT_STATUS @default(active)
     created_at    DateTime       @default(now())
     updated_at    DateTime       @default(now())
+
+    applications Application[] @relation("DeveloperApplications")
+}
+
+model Application {
+    id            String    @id @default(uuid())
+    developer_id  String
+    application   String    @unique
+    client_id     String    @unique
+    client_secret String    @unique
+    created_at    DateTime  @default(now())
+    updated_at    DateTime  @default(now())
+
+    developer     Developer @relation("DeveloperApplications", fields: [developer_id], references: [id])
 }
