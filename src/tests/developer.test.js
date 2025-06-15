@@ -1,7 +1,6 @@
 import { before_test, after_test } from "./before-after";
 import request from "supertest";
 import 'dotenv/config';
-import e from "express";
 
 const url = `http://${process.env.EXPRESS_HOST}:${process.env.EXPRESS_PORT}`;
 

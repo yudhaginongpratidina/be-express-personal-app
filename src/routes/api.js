@@ -7,6 +7,7 @@ import VerifyTokenMiddleware from "../middlewares/verify-token.middleware.js";
 // controllers
 import WellcomeController from "../controllers/wellcome.controller.js";
 import DeveloperController from "../controllers/developer.controller.js";
+import UserController from "../controllers/user.controller.js";
 
 // init route
 const api = express.Router();
@@ -14,11 +15,16 @@ const api = express.Router();
 // wellcome routes
 api.get('/', WellcomeController.index);
 
+// user routes
+api.post('/user/register', UserController.register);
+api.post('/user/login', UserController.login);
+api.get('/user/profile', VerifyTokenMiddleware, UserController.profile);
+api.patch('/user/profile', VerifyTokenMiddleware, UserController.update_data);
+api.delete('/user/deactivated', VerifyTokenMiddleware, UserController.deactivated);
+
 // developer routes
 api.post('/developer/register', DeveloperController.register);
 api.post('/developer/login', DeveloperController.login);
-
-// developer routes (protected)
 api.get('/developer/applications', VerifyTokenMiddleware, DeveloperController.get_applications);
 api.post('/developer/applications', VerifyTokenMiddleware, DeveloperController.create_application);
 api.patch('/developer/applications/:application_id', VerifyTokenMiddleware, DeveloperController.update_application);
