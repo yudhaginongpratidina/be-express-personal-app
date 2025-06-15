@@ -40,5 +40,23 @@ export default class DeveloperValidation {
             .min(1, { message: "Application must be at least 1 characters long" })
             .min(3, { message: "Name must be at least 3 characters long" })
             .max(250, { message: "Name must be at most 250 characters long" }),
+        base_url: z
+            .string()
+            .min(1, { message: "Base URL must be at least 1 characters long" })
+            .min(3, { message: "Base URL must be at least 3 characters long" })
+            .max(150, { message: "Base URL must be at most 150 characters long" }),
+    });
+
+    static UPDATE_APPLICATION = z.object({
+        name: z
+            .string()
+            .min(1, { message: "Application must be at least 1 characters long" })
+            .min(3, { message: "Name must be at least 3 characters long" })
+            .max(250, { message: "Name must be at most 250 characters long" }),
+        base_url: z
+            .string()
+            .min(1, { message: "Base URL must be at least 1 characters long" })
+            .min(3, { message: "Base URL must be at least 3 characters long" })
+            .max(150, { message: "Base URL must be at most 150 characters long" }),
     });
 }

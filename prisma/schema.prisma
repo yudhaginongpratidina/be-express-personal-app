@@ -32,6 +32,7 @@ model Application {
     name          String   @unique
     client_id     String   @unique
     client_secret String   @unique
+    base_url      String
     created_at    DateTime @default(now())
     updated_at    DateTime @default(now())
 

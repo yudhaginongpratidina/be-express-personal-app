@@ -25,17 +25,55 @@ export default class DeveloperController {
         }
     }
 
+    static async get_applications(req, res, next) {
+        try {
+            const auth_header = req.headers['authorization'];
+            const token = auth_header && auth_header.split(' ')[1];
+            const decoded = await decodeToken(token);
+
+            const response = await DeveloperService.get_applications(decoded.id);
+            res.status(200).json({ message: "Get Applications Successfully", data: response });
+        } catch (e) {
+            next(e);
+        }
+    }
+
     static async create_application(req, res, next) {
         try {
             const auth_header = req.headers['authorization'];
             const token = auth_header && auth_header.split(' ')[1];
-            if (!token) return res.status(401).json({ message: "user not logged in" });
-
             const decoded = await decodeToken(token);
 
             const data = Validation.validate(DeveloperValidation.CREATE_APPLICATION, req.body);
             const response = await DeveloperService.create_application(decoded.id, data);
             res.status(201).json({ message: "Create Application Successfully", data: response });
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    static async update_application(req, res, next) {
+        try {
+            const application_id = req.params.application_id;
+            const data = Validation.validate(DeveloperValidation.UPDATE_APPLICATION, req.body);
+            const response = await DeveloperService.update_application(application_id, data);
+            res.status(200).json({ message: "Update Application Successfully", data: response });
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    static async delete_application(req, res, next) {
+        try {
+            const auth_header = req.headers['authorization'];
+            const token = auth_header && auth_header.split(' ')[1];
+            const decoded = await decodeToken(token);
+
+            const application_id = req.params.application_id;
+            const developer_id = decoded.id;
+
+            await DeveloperService.delete_application(developer_id, application_id);
+            res.status(200).json({ message: "Delete Application Successfully"});
         } catch (e) {
             next(e)
         }

@@ -1,6 +1,7 @@
 import { before_test, after_test } from "./before-after";
 import request from "supertest";
 import 'dotenv/config';
+import e from "express";
 
 const url = `http://${process.env.EXPRESS_HOST}:${process.env.EXPRESS_PORT}`;
 
@@ -10,6 +11,7 @@ describe("Developer Test", () => {
     afterAll(async () => { await after_test(); });
 
     let token;
+    let application_id;
 
     it("POST /developer/register - return 400 - password not match", async () => {
         const response = await request(url)
@@ -72,12 +74,13 @@ describe("Developer Test", () => {
         token = response.body.data;
     })
 
-    it("POST /developer/login - return 201 - create application (client_id, client_secret)", async () => {
+    it("POST /developer/applications - return 201 - create application (client_id, client_secret)", async () => {
         const response = await request(url)
             .post('/developer/applications')
             .set('Authorization', `Bearer ${token}`)
             .send({
-                name: 'app test'
+                name: 'app test',
+                base_url: 'http://localhost:3000'
             });
 
         expect(response.status).toBe(201);
@@ -86,18 +89,57 @@ describe("Developer Test", () => {
         expect(response.body.data.name).toBe("app test");
         expect(response.body.data.client_id).toBeDefined();
         expect(response.body.data.client_secret).toBeDefined();
+
+        application_id = response.body.data.id;
     })
 
-    it("POST /developer/login - return 409 - create application (client_id, client_secret)", async () => {
+    it("GET /developer/applications - return 200 - get applications", async () => {
+        const response = await request(url)
+            .get('/developer/applications')
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe("Get Applications Successfully");
+        expect(response.body.data).toBeDefined();
+    })
+
+    it("POST /developer/applications - return 409 - create application (client_id, client_secret)", async () => {
         const response = await request(url)
             .post('/developer/applications')
             .set('Authorization', `Bearer ${token}`)
             .send({
-                name: 'app test'
+                name: 'app test',
+                base_url: 'http://localhost:3000'
             });
 
         expect(response.status).toBe(409);
         expect(response.body.message).toBe("Application already exists");
-    })
-    
+    });
+
+    it("PATCH /developer/applications/:application_id - return 200 - update application success", async () => {
+        const response = await request(url)
+            .patch(`/developer/applications/${application_id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                name: 'app update',
+                base_url: 'http://localhost:3000'
+            });
+
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe("Update Application Successfully");
+
+        expect(response.body.data.id).toBe(application_id);
+        expect(response.body.data.name).toBe("app update");
+        expect(response.body.data.base_url).toBe("http://localhost:3000");
+    });
+
+    it("DELETE /developer/applications/:application_id - return 200 - delete application success", async () => {
+        const response = await request(url)
+            .delete(`/developer/applications/${application_id}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body.message).toBe("Delete Application Successfully");
+    });
+
 })

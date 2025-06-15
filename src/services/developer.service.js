@@ -26,6 +26,10 @@ export default class DeveloperService {
         return generate_token.access_token;
     }
 
+    static async get_applications(developer_id) {
+        return await DeveloperRepository.get_applications(developer_id);
+    }
+
     static async create_application(developer_id, data) {
         const application_exists = await DeveloperRepository.find_application_exists(developer_id, data.name);
         if (application_exists) throw new ResponseError(409, "Application already exists");
@@ -36,7 +40,19 @@ export default class DeveloperService {
         const hash_client_id = await bcrypt.hash(generate_client_id, 12);
         const hash_client_secret = await bcrypt.hash(generate_client_secret, 12);
 
-        return await DeveloperRepository.create_application(developer_id, data.name, hash_client_id, hash_client_secret);
+        return await DeveloperRepository.create_application(developer_id, data.name, hash_client_id, hash_client_secret, data.base_url);
+    }
+
+    static async update_application(application_id, data) {
+        const application_exists = await DeveloperRepository.find_application_exists_by_id(application_id);
+        if (!application_exists) throw new ResponseError(404, "Application not found");
+        return await DeveloperRepository.update_application(application_id, data.name, data.base_url);
+    }
+
+    static async delete_application(developer_id, application_id){
+        const validae_application_owner = await DeveloperRepository.validae_application_owner(developer_id, application_id);
+        if (!validae_application_owner) throw new ResponseError(409, "Application not found");
+        return await DeveloperRepository.delete_application(application_id);
     }
 
 }
