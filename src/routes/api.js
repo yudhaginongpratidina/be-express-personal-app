@@ -9,6 +9,7 @@ import WellcomeController from "../controllers/wellcome.controller.js";
 import DeveloperController from "../controllers/developer.controller.js";
 import UserController from "../controllers/user.controller.js";
 import PortfolioController from "../controllers/portfolio.controller.js";
+import BlogController from "../controllers/blog.controller.js";
 
 // init route
 const api = express.Router();
@@ -29,6 +30,15 @@ api.get('/user/portfolio/:id', VerifyTokenMiddleware, PortfolioController.get_po
 api.post('/user/portfolio', VerifyTokenMiddleware, PortfolioController.create_portfolio);
 api.patch('/user/portfolio/:id', VerifyTokenMiddleware, PortfolioController.update_portfolio_by_id);
 api.delete('/user/portfolio/:id', VerifyTokenMiddleware, PortfolioController.delete_portfolio_by_id);
+
+// blog routes
+api.get('/blogs', BlogController.get_blogs);
+api.get('/blogs/my-blogs', VerifyTokenMiddleware, BlogController.get_blogs_by_author_id);
+api.get('/blogs/:slug', BlogController.get_blog_by_slug);
+api.post('/blogs', VerifyTokenMiddleware, BlogController.create_blog);
+api.get('/blogs/:id/edit', VerifyTokenMiddleware, BlogController.get_blog_by_id);
+api.patch('/blogs/:id/update', VerifyTokenMiddleware, BlogController.update_blog_by_id);
+api.delete('/blogs/:id/delete', VerifyTokenMiddleware, BlogController.delete_blog_by_id);
 
 // developer routes
 api.post('/developer/register', DeveloperController.register);

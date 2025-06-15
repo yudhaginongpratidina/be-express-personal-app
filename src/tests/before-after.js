@@ -2,6 +2,7 @@ import db from "../application/database.js";
 import bcrypt from "bcrypt";
 
 const before_test = async () => {
+    await db.blog.deleteMany();
     await db.portfolio.deleteMany();
     await db.application.deleteMany();
     await db.developer.deleteMany();
@@ -10,12 +11,13 @@ const before_test = async () => {
         data: {
             name: "user@test.com",
             email: "user@test.com",
-            hash_password: await bcrypt.hash("user@test.com", 10)           
+            hash_password: await bcrypt.hash("user@test.com", 10)
         }
     })
 };
 
 const after_test = async () => {
+    await db.blog.deleteMany();
     await db.portfolio.deleteMany();
     await db.application.deleteMany();
     await db.developer.deleteMany();
