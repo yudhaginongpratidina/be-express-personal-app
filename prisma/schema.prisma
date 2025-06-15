@@ -23,6 +23,8 @@ model User {
     status        ACCOUNT_STATUS @default(active)
     created_at    DateTime       @default(now())
     updated_at    DateTime       @default(now())
+
+    portfolios Portfolio[] @relation("UserPortfolios")
 }
 
 model Developer {
@@ -48,4 +50,16 @@ model Application {
     updated_at    DateTime @default(now())
 
     developer Developer @relation("DeveloperApplications", fields: [developer_id], references: [id])
+}
+
+model Portfolio {
+    id          String   @id @default(uuid())
+    user_id     String
+    title       String   @unique
+    description String
+    image       String?
+    created_at  DateTime @default(now())
+    updated_at  DateTime @default(now())
+
+    user User @relation("UserPortfolios", fields: [user_id], references: [id])
 }

@@ -8,6 +8,7 @@ import VerifyTokenMiddleware from "../middlewares/verify-token.middleware.js";
 import WellcomeController from "../controllers/wellcome.controller.js";
 import DeveloperController from "../controllers/developer.controller.js";
 import UserController from "../controllers/user.controller.js";
+import PortfolioController from "../controllers/portfolio.controller.js";
 
 // init route
 const api = express.Router();
@@ -21,6 +22,13 @@ api.post('/user/login', UserController.login);
 api.get('/user/profile', VerifyTokenMiddleware, UserController.profile);
 api.patch('/user/profile', VerifyTokenMiddleware, UserController.update_data);
 api.delete('/user/deactivated', VerifyTokenMiddleware, UserController.deactivated);
+
+// user portfolio
+api.get('/user/portfolio', VerifyTokenMiddleware, PortfolioController.get_all_portfolio_by_user_id);
+api.get('/user/portfolio/:id', VerifyTokenMiddleware, PortfolioController.get_portfolio_by_id);
+api.post('/user/portfolio', VerifyTokenMiddleware, PortfolioController.create_portfolio);
+api.patch('/user/portfolio/:id', VerifyTokenMiddleware, PortfolioController.update_portfolio_by_id);
+api.delete('/user/portfolio/:id', VerifyTokenMiddleware, PortfolioController.delete_portfolio_by_id);
 
 // developer routes
 api.post('/developer/register', DeveloperController.register);
